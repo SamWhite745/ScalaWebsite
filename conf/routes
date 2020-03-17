@@ -16,4 +16,8 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /login                      controllers.HomeController.login
 GET     /register                   controllers.HomeController.register
 
+
+GET         /login                       controllers.LoginController.login
+POST        /login                       controllers.LoginController.loginSubmit
+
       
