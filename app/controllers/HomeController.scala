@@ -17,16 +17,16 @@ class HomeController @Inject()(cc: ControllerComponents, authAction: Authenticat
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index = Action {
+  def index: Action[AnyContent] = Action {
     Ok(views.html.index())
   }
 
-  def login = authAction {
-    Ok(views.html.login())
+  def register: Action[AnyContent]= Action {
+    Ok(views.html.register())
   }
 
-  def register = Action {
-    Ok(views.html.register())
+  def game: Action[AnyContent]= Action {
+    Ok(views.html.game())
   }
 
 }
