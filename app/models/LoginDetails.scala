@@ -1,5 +1,6 @@
 package models
 
+import controllers.MongoService
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -17,7 +18,6 @@ object LoginDetails {
   )
 
   def checkIfUserIsValid(userDetails: LoginDetails): Boolean = userList.contains(userDetails)
-
   def getUsername(username: String): Option[LoginDetails] = userList.find(user => user.username == username)
 
 

@@ -3,13 +3,13 @@ package controllers
 import authentication.AuthenticationAction
 import javax.inject._
 import play.api.mvc._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents, authAction: AuthenticationAction) extends AbstractController(cc) {
+class HomeController @Inject()(cc: ControllerComponents, authAction: AuthenticationAction, val mongoService: MongoService) extends AbstractController(cc) {
 
   /**
    * Create an Action to render an HTML page with a welcome message.
@@ -21,11 +21,13 @@ class HomeController @Inject()(cc: ControllerComponents, authAction: Authenticat
     Ok(views.html.index())
   }
 
-  def register: Action[AnyContent]= Action {
-    Ok(views.html.register())
+  def readAll(): Action[AnyContent] = Action.async {
+    mongoService.findAll().map( listOfUsers =>
+      Ok(listOfUsers.toString())
+    )
   }
 
-  def game: Action[AnyContent]= Action {
+  def game: Action[AnyContent]= authAction {
     Ok(views.html.game())
   }
 
