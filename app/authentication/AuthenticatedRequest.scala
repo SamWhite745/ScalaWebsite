@@ -13,11 +13,15 @@ class AuthenticationAction @Inject()(val parser: BodyParsers.Default, val mongoS
   extends ActionBuilder[AuthenticatedRequest, AnyContent] {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    request.session.get("username")
-      .map(username => mongoService.findByUsername(username))
-      .map(futureUser => futureUser.map{ userList =>
-        userList.map(user => block(new AuthenticatedRequest(user.username, request)))})
-      .getOrElse(Future.successful(Results.Redirect("/")))
+    val userName = request.session.get("username")
+    if (userName.isEmpty)
+      Future.successful(Results.Redirect("/"))
+    else
+      mongoService.findByUsername(userName.get)
+        .map(result => result)
+        .flatMap(futureUserList =>
+          block(new AuthenticatedRequest(futureUserList.head.username, request))
+        )
   }
 
 }
