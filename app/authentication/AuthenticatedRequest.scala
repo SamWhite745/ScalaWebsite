@@ -15,8 +15,9 @@ class AuthenticationAction @Inject()(val parser: BodyParsers.Default, val mongoS
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     request.session.get("username")
       .map(username => mongoService.findByUsername(username))
-//      .map(user => block(new AuthenticatedRequest(user, request)))
-//      .getOrElse(Future.successful(Results.Redirect("/")))
+      .map(futureUser => futureUser.map{ userList =>
+        userList.map(user => block(new AuthenticatedRequest(user.username, request)))})
+      .getOrElse(Future.successful(Results.Redirect("/")))
   }
 
 }
