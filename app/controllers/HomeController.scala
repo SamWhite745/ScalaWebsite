@@ -3,7 +3,14 @@ package controllers
 import authentication.AuthenticationAction
 import javax.inject._
 import play.api.mvc._
+import play.api.routing.JavaScriptReverseRouter
+import javax.inject.Inject
+import play.api.http.MimeTypes
+import play.api.mvc._
+import play.api.routing._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
@@ -27,8 +34,22 @@ class HomeController @Inject()(cc: ControllerComponents, authAction: Authenticat
     )
   }
 
+  def update(username: String, highscore: Int): Action[AnyContent] = Action {
+    mongoService.updateHighscore(username, highscore)
+    Ok("Updated")
+  }
+
   def game: Action[AnyContent]= authAction {
     Ok(views.html.game())
   }
+
+
+//  def javascriptRoutes: Action[AnyContent] = Action { implicit request =>
+//    Ok(
+//      JavaScriptReverseRouter("jsRoutes")(
+//        routes.javascript.HomeController.update
+//      )
+//    ).as(MimeTypes.JAVASCRIPT)
+//  }
 
 }

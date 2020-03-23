@@ -13,7 +13,7 @@ case class User(
                  _id: BSONObjectID,
                  username: String,
                  password: String,
-                 highscore: Int = 0
+                 var highscore: Int = 0
                )
 
 object JsonFormats {

@@ -20,5 +20,7 @@ POST        /register            controllers.RegisterController.registerSubmit
 GET         /login               controllers.LoginController.login
 POST        /login               controllers.LoginController.loginSubmit
 
+POST        /update              controllers.HomeController.update(username: String, highscore: Int)
+
 
       

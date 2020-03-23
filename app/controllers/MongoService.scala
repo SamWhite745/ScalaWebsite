@@ -13,7 +13,6 @@ import play.api.libs.json.{JsValue, Json}
 import reactivemongo.api.Cursor
 import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 import reactivemongo.api.commands.WriteResult
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class MongoService @Inject()(
@@ -41,6 +40,18 @@ class MongoService @Inject()(
 
   def doesNotExist(username: String): Future[Boolean] = {
     findByUsername(username).map(user => user.isEmpty)
+  }
+
+  def updateHighscore(username: String, highscore: Int): Future[Any] = {
+    findByUsername(username).map{a =>
+//      println(a.head.highscore)
+      val current = a.head.highscore
+      if (highscore > current) {
+        var user = a.head
+        user.highscore = highscore
+        collection.map(_.update.one(Json.obj("username" -> username), user))
+      }
+    }
   }
 
   def findByUsername(username: String): Future[List[User]] =  {
